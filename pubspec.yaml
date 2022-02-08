@@ -1,6 +1,6 @@
-name: flutter_diagro
-description: Diagro plaftorm functions for flutter
-version: 0.0.1
+name: lib_flutter_app
+description: Library for Flutter applications
+version: 1.0.0
 homepage: https://www.diagro.be
 publish_to: none
 
@@ -21,8 +21,10 @@ dependencies:
   permission_handler: ^8.3.0
   external_path: ^1.0.1
   connectivity_plus: ^2.1.0
-  flutter_token:
-    path: ../flutter_token
+  lib_flutter_token:
+    git:
+      url: https://github.com/diagro-git/lib_flutter_token.git
+      ref: master
 
 dev_dependencies:
   flutter_test:
