@@ -1,39 +1,34 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://diagro.be/assets/img/diagro-logo.svg" width="400"></a></p>
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
+<p align="center">
+<img src="https://img.shields.io/badge/project-lib_flutter_app-yellowgreen" alt="Diagro flutter library">
+<img src="https://img.shields.io/badge/type-library-informational" alt="Diagro service">
+<img src="https://img.shields.io/badge/php-8.0-blueviolet" alt="PHP">
+<img src="https://img.shields.io/badge/laravel-8.67-red" alt="Laravel framework">
+</p>
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
+## Beschrijving
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+Deze bibliotheek dient als basis voor alle Diagro apps die gemaakt worden met Flutter.
 
-## Features
+## Dependencies
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+<p><a href="https://github.com/diagro-git/lib_flutter_token"><img src="https://img.shields.io/badge/lib-flutter_token-informational" alt="Diagro token library"></a></p>
 
-## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+## Development
 
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
-```dart
-const like = 'sample';
+```yaml
+lib_flutter_app:
+    git:
+      url: https://github.com/diagro-git/lib_flutter_app.git
+      ref: ^1.0.0
 ```
 
-## Additional information
+## Changelog
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+### V1.1
+
+### V1.0.0
+
+* **Feature**: login, company en logout screen and callbacks

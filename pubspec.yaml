@@ -24,7 +24,7 @@ dependencies:
   lib_flutter_token:
     git:
       url: https://github.com/diagro-git/lib_flutter_token.git
-      ref: master
+      ref: ^1.0.0
 
 dev_dependencies:
   flutter_test:
