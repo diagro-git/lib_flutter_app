@@ -19,8 +19,8 @@ import 'package:hive/src/hive_impl.dart';
 class AuthenticationTokenNotifier extends StateNotifier<String?>
 {
 
-  static const String BOX_NAME = 'auth';
-  static const String BOX_KEY = 'at_token';
+  static const String boxName = 'auth';
+  static const String boxKey = 'at_token';
 
 
   /// RiverPod reference
@@ -29,7 +29,7 @@ class AuthenticationTokenNotifier extends StateNotifier<String?>
 
 
   /// Constructor
-  AuthenticationTokenNotifier(Ref this.ref) : super(null);
+  AuthenticationTokenNotifier(this.ref) : super(null);
 
 
   /// Set a new token
@@ -48,7 +48,7 @@ class AuthenticationTokenNotifier extends StateNotifier<String?>
     if(state == null || state!.isEmpty) return;
 
     var box = await _getHiveBox();
-    await box.put(BOX_KEY, state);
+    await box.put(boxKey, state);
     await hive.close();
   }
 
@@ -70,7 +70,7 @@ class AuthenticationTokenNotifier extends StateNotifier<String?>
   Future<void> fetch() async
   {
     var box = await _getHiveBox();
-    if(box.isNotEmpty && box.containsKey(BOX_KEY)) {
+    if(box.isNotEmpty && box.containsKey(boxKey)) {
        state = box.get('at_token');
     }
     await hive.close();
@@ -82,7 +82,7 @@ class AuthenticationTokenNotifier extends StateNotifier<String?>
   Future<void> delete() async
   {
     var box = await _getHiveBox();
-    await box.delete(BOX_KEY);
+    await box.delete(boxKey);
     hive.close();
 
     state = null;
@@ -94,7 +94,7 @@ class AuthenticationTokenNotifier extends StateNotifier<String?>
   {
     await _createDiagroDirectoryIfNotExists();
     hive.init(await _getDiagroPath());
-    return await hive.openBox(BOX_NAME);
+    return await hive.openBox(boxName);
   }
 
 

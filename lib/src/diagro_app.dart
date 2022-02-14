@@ -19,21 +19,21 @@ class DiagroApp extends ConsumerWidget
   {
     final state = ref.watch(appState);
 
-    if(state == DiagroState.UNINITIALIZED) {
+    if(state == DiagroState.uninitialized) {
       return ref.read(appIniter).when(
           data: (_) => const WaitingApp(),
           error: (error, stack) => const WaitingApp(),
           loading: () => const WaitingApp()
       );
-    } else if(state == DiagroState.REFRESH) {
+    } else if(state == DiagroState.refresh) {
       return const WaitingApp();
-    } else if(state == DiagroState.LOGIN) {
+    } else if(state == DiagroState.login) {
       return const LoginApp();
-    } else if(state == DiagroState.COMPANY) {
+    } else if(state == DiagroState.company) {
       return const CompanyApp();
-    } else if(state == DiagroState.AUTHENTICATED) {
+    } else if(state == DiagroState.authenticated) {
       return app;
-    } else if(state == DiagroState.OFFLINE) {
+    } else if(state == DiagroState.offline) {
       return const OfflineApp();
     } else {
       throw Exception("Unknonw Diagro application state!");

@@ -385,7 +385,7 @@ packages:
     description:
       path: "."
       ref: "^1.0.0"
-      resolved-ref: af036faf28fb46d2f6d4259bfd5843731f9341ec
+      resolved-ref: cad063879e9c25cc24588f80ee9a18dcbb326b7b
       url: "https://github.com/diagro-git/lib_flutter_token.git"
     source: git
     version: "1.0.0"

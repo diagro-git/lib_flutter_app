@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lib_flutter_app/src/diagro.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -53,11 +52,11 @@ class LoginScreenState extends ConsumerState<LoginScreen>
                       Text("Aanmelden", style: GoogleFonts.comfortaa(fontWeight: FontWeight.bold, fontSize: 26)),
                       TextFormField(
                         controller: _emailController,
-                        decoration: const InputDecoration(icon: const Icon(Icons.mail), hintText: "E-mailadres", labelText: "E-mailadres"),
+                        decoration: const InputDecoration(icon: Icon(Icons.mail), hintText: "E-mailadres", labelText: "E-mailadres"),
                       ),
                       TextFormField(
                         controller: _passwordController,
-                        decoration: const InputDecoration(icon: const Icon(Icons.vpn_key_rounded), hintText: "Wachtwoord", labelText: "Wachtwoord"),
+                        decoration: const InputDecoration(icon: Icon(Icons.vpn_key_rounded), hintText: "Wachtwoord", labelText: "Wachtwoord"),
                         obscureText: true,
                       ),
                       MaterialButton(onPressed: () async {

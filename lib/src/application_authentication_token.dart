@@ -15,8 +15,8 @@ import 'package:http/http.dart' as http;
 class ApplicationAuthenticationTokenNotifier extends StateNotifier<String?>
 {
 
-  static const String BOX_NAME = 'auth';
-  static const String BOX_KEY = 'aat_token';
+  static const String boxName = 'auth';
+  static const String boxKey = 'aat_token';
 
   /// RiverProvider reference
   final Ref ref;
@@ -24,12 +24,12 @@ class ApplicationAuthenticationTokenNotifier extends StateNotifier<String?>
 
 
   /// Constructor
-  ApplicationAuthenticationTokenNotifier(Ref this.ref) : super(null);
+  ApplicationAuthenticationTokenNotifier(this.ref) : super(null);
 
 
   Future<void> checkBox() async
   {
-    box ??= await Hive.openBox(BOX_NAME);
+    box ??= await Hive.openBox(boxName);
   }
 
 
@@ -54,7 +54,7 @@ class ApplicationAuthenticationTokenNotifier extends StateNotifier<String?>
   {
     if(state == null || state!.isEmpty) return;
     await checkBox();
-    await box!.put(BOX_KEY, state);
+    await box!.put(boxKey, state);
   }
 
 
@@ -75,8 +75,8 @@ class ApplicationAuthenticationTokenNotifier extends StateNotifier<String?>
   Future<void> fetch() async
   {
     await checkBox();
-    if(box!.isNotEmpty && box!.containsKey(BOX_KEY)) {
-      state = box!.get(BOX_KEY);
+    if(box!.isNotEmpty && box!.containsKey(boxKey)) {
+      state = box!.get(boxKey);
     }
   }
 
@@ -86,7 +86,7 @@ class ApplicationAuthenticationTokenNotifier extends StateNotifier<String?>
   Future<void> delete() async
   {
     await checkBox();
-    await box!.delete(BOX_KEY);
+    await box!.delete(boxKey);
     state = null;
   }
 

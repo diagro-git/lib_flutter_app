@@ -14,7 +14,7 @@ import 'companies.dart';
 
 enum DiagroState
 {
-  UNINITIALIZED, LOGIN, COMPANY, REFRESH, AUTHENTICATED, OFFLINE
+  uninitialized, login, company, refresh, authenticated, offline
 }
 
 
@@ -33,7 +33,7 @@ class Authenticator
     var prefferedCompany = ref.read(diagro_company.company);
 
     if(token == null) {
-      ref.read(appState.state).state = DiagroState.LOGIN;
+      ref.read(appState.state).state = DiagroState.login;
     } else {
       var headers = {
         'x-app-id': ref.read(appId),
@@ -54,7 +54,7 @@ class Authenticator
         await ref.read(diagro_company.company.notifier).delete();
         ref
             .read(appState.state)
-            .state = DiagroState.LOGIN;
+            .state = DiagroState.login;
       }
     }
   }
@@ -105,7 +105,7 @@ class Authenticator
       await ref.read(diagro_company.company.notifier).delete();
       ref
           .read(appState.state)
-          .state = DiagroState.LOGIN;
+          .state = DiagroState.login;
     } else {
       await loginWithToken();
     }
@@ -130,7 +130,7 @@ class Authenticator
       await ref.read(diagro_company.companies.notifier).delete();
       await ref.read(diagro_company.company.notifier).delete();
 
-      ref.read(appState.state).state = DiagroState.LOGIN;
+      ref.read(appState.state).state = DiagroState.login;
     }
   }
 
@@ -146,13 +146,13 @@ class Authenticator
       if(body.containsKey('aat')) {
         ref.read(applicationAuthenticationToken.notifier).setToken(body['aat']);
         ref.read(user.state).state = AppAuthToken.decode(body['aat']).user;
-        ref.read(appState.state).state = DiagroState.AUTHENTICATED;
+        ref.read(appState.state).state = DiagroState.authenticated;
       } else if(body.containsKey('companies')) {
         await ref.read(diagro_company.companies.notifier).addAll(
             diagro_company.Company.fromJson(body['companies'])
         );
         await ref.read(diagro_company.company.notifier).setCompany(null);
-        ref.read(appState.state).state = DiagroState.COMPANY;
+        ref.read(appState.state).state = DiagroState.company;
       }
     }
   }
@@ -161,8 +161,8 @@ class Authenticator
 }
 
 final user = StateProvider<User?>((ref) => null);
-final appState = StateProvider<DiagroState>((ref) => DiagroState.UNINITIALIZED);
-final appStateBeforeOffline = StateProvider<DiagroState>((ref) => DiagroState.UNINITIALIZED);
+final appState = StateProvider<DiagroState>((ref) => DiagroState.uninitialized);
+final appStateBeforeOffline = StateProvider<DiagroState>((ref) => DiagroState.uninitialized);
 final authenticator = Provider((ref) => Authenticator(ref));
 
 final appIniter = FutureProvider<void>((ref) async {
@@ -173,22 +173,22 @@ final appIniter = FutureProvider<void>((ref) async {
   //network initialisation
   var conn = await Connectivity().checkConnectivity();
   if(conn == ConnectivityResult.none) {
-    ref.read(appState.state).state = DiagroState.OFFLINE;
+    ref.read(appState.state).state = DiagroState.offline;
   }
 
   Connectivity().onConnectivityChanged.listen((event) {
     final state = ref.read(appState);
     if(event == ConnectivityResult.none) {
-      if(state != DiagroState.OFFLINE) {
+      if(state != DiagroState.offline) {
         ref //save current state
             .read(appStateBeforeOffline.state)
             .state = state;
         ref //set app state to offline
             .read(appState.state)
-            .state = DiagroState.OFFLINE;
+            .state = DiagroState.offline;
       }
     } else {
-      if(state == DiagroState.OFFLINE) {
+      if(state == DiagroState.offline) {
         ref //set app state to before the offline state
             .read(appState.state)
             .state = ref.read(appStateBeforeOffline);
@@ -212,7 +212,7 @@ final appIniter = FutureProvider<void>((ref) async {
                 .state = aatToken.user;
             ref
                 .read(appState.state)
-                .state = DiagroState.AUTHENTICATED;
+                .state = DiagroState.authenticated;
           } else {
             await ref.read(authenticator).refresh();
           }

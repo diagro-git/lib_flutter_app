@@ -32,8 +32,8 @@ class Company extends HiveObject
 class CompaniesNotifier extends StateNotifier<List<Company>>
 {
 
-  static const String BOX_NAME = 'auth';
-  static const String BOX_KEY = 'companies';
+  static const String boxName = 'auth';
+  static const String boxKey = 'companies';
 
   /// RiverProvider reference
   final Ref ref;
@@ -41,12 +41,12 @@ class CompaniesNotifier extends StateNotifier<List<Company>>
 
 
   /// Constructor
-  CompaniesNotifier(Ref this.ref): super([]);
+  CompaniesNotifier(this.ref): super([]);
 
 
   Future<void> checkBox() async
   {
-    box ??= await Hive.openBox(BOX_NAME);
+    box ??= await Hive.openBox(boxName);
   }
 
 
@@ -77,7 +77,7 @@ class CompaniesNotifier extends StateNotifier<List<Company>>
   Future<void> save() async
   {
     await checkBox();
-    await box!.put(BOX_KEY, state);
+    await box!.put(boxKey, state);
   }
 
 
@@ -86,8 +86,8 @@ class CompaniesNotifier extends StateNotifier<List<Company>>
   Future<void> fetch() async
   {
     await checkBox();
-    if(box!.isNotEmpty && box!.containsKey(BOX_KEY)) {
-      state = box!.get(BOX_KEY);
+    if(box!.isNotEmpty && box!.containsKey(boxKey)) {
+      state = box!.get(boxKey);
     }
   }
 
@@ -96,7 +96,7 @@ class CompaniesNotifier extends StateNotifier<List<Company>>
   Future<void> delete() async
   {
     await checkBox();
-    await box!.delete(BOX_KEY);
+    await box!.delete(boxKey);
     state = [];
   }
 
@@ -109,8 +109,8 @@ class CompaniesNotifier extends StateNotifier<List<Company>>
 class CompanyNotifier extends StateNotifier<Company?>
 {
 
-  static const String BOX_NAME = 'auth';
-  static const String BOX_KEY = 'company';
+  static const String boxName = 'auth';
+  static const String boxKey = 'company';
 
   Box? box;
 
@@ -120,7 +120,7 @@ class CompanyNotifier extends StateNotifier<Company?>
 
   Future<void> checkBox() async
   {
-    box ??= await Hive.openBox(BOX_NAME);
+    box ??= await Hive.openBox(boxName);
   }
 
 
@@ -136,7 +136,7 @@ class CompanyNotifier extends StateNotifier<Company?>
   Future<void> save() async
   {
     await checkBox();
-    await box!.put(BOX_KEY, state);
+    await box!.put(boxKey, state);
   }
 
 
@@ -153,8 +153,8 @@ class CompanyNotifier extends StateNotifier<Company?>
   Future<void> fetch() async
   {
     await checkBox();
-    if(box!.isNotEmpty && box!.containsKey(BOX_KEY)) {
-      state = box!.get(BOX_KEY);
+    if(box!.isNotEmpty && box!.containsKey(boxKey)) {
+      state = box!.get(boxKey);
     }
   }
 
@@ -163,7 +163,7 @@ class CompanyNotifier extends StateNotifier<Company?>
   Future<void> delete() async
   {
     await checkBox();
-    await box!.delete(BOX_KEY);
+    await box!.delete(boxKey);
     state = null;
   }
 
