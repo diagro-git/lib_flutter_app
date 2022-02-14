@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter_diagro/src/application_authentication_token.dart';
-import 'package:flutter_diagro/src/authentication_token.dart';
-import 'package:flutter_diagro/src/companies.dart' as diagro_company;
-import 'package:flutter_diagro/src/configuration.dart';
+import 'package:lib_flutter_app/src/application_authentication_token.dart';
+import 'package:lib_flutter_app/src/authentication_token.dart';
+import 'package:lib_flutter_app/src/companies.dart' as diagro_company;
+import 'package:lib_flutter_app/src/configuration.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_token/flutter_token.dart';
+import 'package:lib_flutter_token/flutter_token.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
 
@@ -43,7 +43,7 @@ class Authenticator
       if (prefferedCompany != null) {
         headers['x-company-preffered'] = prefferedCompany.name;
       }
-      var url = Uri.http(ref.read(diagroServiceUrl), '/login');
+      var url = Uri.http(ref.read(diagroServiceAuthUrl), '/login');
       var response = await http.post(url, headers: headers, body: {});
 
       if (response.statusCode == 200) {
@@ -67,7 +67,7 @@ class Authenticator
     if(prefferedCompany != null) {
       headers['x-company-preffered'] = prefferedCompany.name;
     }
-    var url = Uri.http(ref.read(diagroServiceUrl), '/login');
+    var url = Uri.http(ref.read(diagroServiceAuthUrl), '/login');
     var response = await http.post(url, headers: headers, body: {'email' : email, 'password' : password});
 
     if(response.statusCode == 200) {
@@ -84,7 +84,7 @@ class Authenticator
     if(company == null) return;
 
     var headers = {'x-app-id' : ref.read(appId), 'Accept' : 'application/json', 'Authorization' : 'Bearer $token'};
-    var url = Uri.http(ref.read(diagroServiceUrl), '/company');
+    var url = Uri.http(ref.read(diagroServiceAuthUrl), '/company');
     var response = await http.post(url, headers: headers, body: {'company' : company.name});
 
     if(response.statusCode == 200) {
@@ -121,7 +121,7 @@ class Authenticator
     }
 
     var headers = {'x-app-id' : ref.read(appId), 'Accept' : 'application/json', 'Authorization' : 'Bearer $token'};
-    var url = Uri.http(ref.read(diagroServiceUrl), '/logout');
+    var url = Uri.http(ref.read(diagroServiceAuthUrl), '/logout');
     var response = await http.post(url, headers: headers, body: {});
 
     if(response.statusCode == 200) {

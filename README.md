@@ -25,10 +25,19 @@ lib_flutter_app:
       ref: ^1.0.0
 ```
 
-## Changelog
+### Configuration
 
-### V1.1
+Maak een **.env** file zoals onderstaand voorbeeld. De APP_ID is de ID van de frontend_applications table.
+
+```dotenv
+DIAGRO_SERVICE_AUTH_URL=https://auth.diagro.dev
+APP_ID=1
+```
+
+## Changelog
 
 ### V1.0.0
 
 * **Feature**: login, company en logout screen and callbacks
+* **Feature**: offline page when internet connection is lost
+* **Feature**: DiagroApp class

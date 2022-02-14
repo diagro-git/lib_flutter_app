@@ -1,4 +1,4 @@
-import 'package:flutter_diagro/src/configuration.dart';
+import 'package:lib_flutter_app/src/configuration.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -63,7 +63,7 @@ class ApplicationAuthenticationTokenNotifier extends StateNotifier<String?>
   Future<bool> valid() async
   {
     var headers = {'x-app-id' : ref.read(appId), 'Authorization' : 'Bearer $state', 'Accept' : 'application/json'};
-    var url = Uri.http(ref.read(diagroServiceUrl), '/validate/token');
+    var url = Uri.http(ref.read(diagroServiceAuthUrl), '/validate/token');
     var response = await http.get(url, headers: headers);
 
     return response.statusCode == 200;

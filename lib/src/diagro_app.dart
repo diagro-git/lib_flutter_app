@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_diagro/flutter_diagro.dart';
-import 'package:flutter_diagro/src/diagro.dart';
-import 'package:flutter_diagro/src/offline_screen.dart';
+import 'package:lib_flutter_app/flutter_diagro.dart';
+import 'package:lib_flutter_app/src/diagro.dart';
+import 'package:lib_flutter_app/src/offline_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 

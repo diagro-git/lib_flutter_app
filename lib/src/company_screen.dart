@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_diagro/flutter_diagro.dart';
+import 'package:lib_flutter_app/flutter_diagro.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_diagro/src/companies.dart' as diagro_company;
+import 'package:lib_flutter_app/src/companies.dart' as diagro_company;
 
 
 class CompanyScreen extends ConsumerStatefulWidget {
