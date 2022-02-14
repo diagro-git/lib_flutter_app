@@ -43,7 +43,7 @@ class Authenticator
       if (prefferedCompany != null) {
         headers['x-company-preffered'] = prefferedCompany.name;
       }
-      var url = Uri.http(ref.read(diagroServiceAuthUrl), '/login');
+      var url = Uri.https(ref.read(diagroServiceAuthUrl), '/login');
       var response = await http.post(url, headers: headers, body: {});
 
       if (response.statusCode == 200) {
@@ -67,7 +67,7 @@ class Authenticator
     if(prefferedCompany != null) {
       headers['x-company-preffered'] = prefferedCompany.name;
     }
-    var url = Uri.http(ref.read(diagroServiceAuthUrl), '/login');
+    var url = Uri.https(ref.read(diagroServiceAuthUrl), '/login');
     var response = await http.post(url, headers: headers, body: {'email' : email, 'password' : password});
 
     if(response.statusCode == 200) {
@@ -84,7 +84,7 @@ class Authenticator
     if(company == null) return;
 
     var headers = {'x-app-id' : ref.read(appId), 'Accept' : 'application/json', 'Authorization' : 'Bearer $token'};
-    var url = Uri.http(ref.read(diagroServiceAuthUrl), '/company');
+    var url = Uri.https(ref.read(diagroServiceAuthUrl), '/company');
     var response = await http.post(url, headers: headers, body: {'company' : company.name});
 
     if(response.statusCode == 200) {
@@ -121,7 +121,7 @@ class Authenticator
     }
 
     var headers = {'x-app-id' : ref.read(appId), 'Accept' : 'application/json', 'Authorization' : 'Bearer $token'};
-    var url = Uri.http(ref.read(diagroServiceAuthUrl), '/logout');
+    var url = Uri.https(ref.read(diagroServiceAuthUrl), '/logout');
     var response = await http.post(url, headers: headers, body: {});
 
     if(response.statusCode == 200) {
