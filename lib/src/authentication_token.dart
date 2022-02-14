@@ -58,7 +58,7 @@ class AuthenticationTokenNotifier extends StateNotifier<String?>
   Future<bool> valid() async
   {
     var headers = {'x-app-id' : ref.read(appId), 'Authorization' : 'Bearer $state', 'Accept' : 'application/json'};
-    var url = Uri.http(ref.read(diagroServiceAuthUrl), '/validate/user-token');
+    var url = Uri.https(ref.read(diagroServiceAuthUrl), '/validate/user-token');
     var response = await http.get(url, headers: headers);
 
     return response.statusCode == 200;

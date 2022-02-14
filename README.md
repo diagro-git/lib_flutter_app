@@ -30,7 +30,7 @@ lib_flutter_app:
 Maak een **.env** file zoals onderstaand voorbeeld. De APP_ID is de ID van de frontend_applications table.
 
 ```dotenv
-DIAGRO_SERVICE_AUTH_URL=https://auth.diagro.dev
+DIAGRO_SERVICE_AUTH_URL=auth.diagro.dev
 APP_ID=1
 ```
 
