@@ -29,7 +29,11 @@ class ApplicationAuthenticationTokenNotifier extends StateNotifier<String?>
 
   Future<void> checkBox() async
   {
-    box ??= await Hive.openBox(boxName);
+    if(! Hive.isBoxOpen(boxName)) {
+      box ??= await Hive.openBox(boxName);
+    } else if(box == null) {
+      box = Hive.box(boxName);
+    }
   }
 
 
