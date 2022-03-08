@@ -44,8 +44,8 @@ class ErrorScreen extends ConsumerWidget
                     child: const Text("Terug naar startscherm", style: TextStyle(color: Colors.white, fontSize: 18)),
                     onPressed: () {
                       ref.read(errorProvider.state).state = "";
-                      ref.read(appState.state).state = DiagroState.authenticated;
-                      Navigator.pushNamed(context, '/');
+                      ref.read(appState.state).state = ref.read(appStateBeforeError);
+                      //Navigator.pushNamed(context, '/');
                     }
                   )
                 ]

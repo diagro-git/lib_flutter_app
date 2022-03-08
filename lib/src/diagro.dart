@@ -72,6 +72,8 @@ class Authenticator
 
     if(response.statusCode == 200) {
       await _processLoginResponse(response);
+    } else {
+      _error(jsonDecode(response.body)['message']);
     }
   }
 
@@ -89,7 +91,21 @@ class Authenticator
 
     if(response.statusCode == 200) {
       await _processLoginResponse(response);
+    } else {
+      _error(jsonDecode(response.body)['message']);
     }
+  }
+
+  void _error(String message)
+  {
+    ref.read(errorProvider.state).state = message;
+
+    //save old state
+    ref.read(appStateBeforeError.state).state = ref.read(appState);
+
+    ref //set app state to error
+        .read(appState.state)
+        .state = DiagroState.error;
   }
 
 
@@ -144,6 +160,8 @@ class Authenticator
       await ref.read(diagro_company.company.notifier).delete();
 
       ref.read(appState.state).state = DiagroState.login;
+    } else {
+      _error(jsonDecode(response.body)['message']);
     }
   }
 
@@ -168,6 +186,7 @@ class Authenticator
         ref.read(appState.state).state = DiagroState.company;
       } else {
         await logout();
+        _error("Account heeft geen toegang tot deze applicatie!");
       }
     }
   }
@@ -178,6 +197,8 @@ class Authenticator
 final user = StateProvider<User?>((ref) => null);
 final appState = StateProvider<DiagroState>((ref) => DiagroState.uninitialized);
 final appStateBeforeOffline = StateProvider<DiagroState>((ref) => DiagroState.uninitialized);
+final appStateBeforeError = StateProvider<DiagroState>((ref) => DiagroState.uninitialized);
+final appStateBeforeUnauthorized = StateProvider<DiagroState>((ref) => DiagroState.uninitialized);
 final authenticator = Provider((ref) => Authenticator(ref));
 final errorProvider = StateProvider<String>((ref) => "");
 

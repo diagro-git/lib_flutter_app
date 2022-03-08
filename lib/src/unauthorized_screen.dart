@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lib_flutter_app/flutter_diagro.dart';
+import 'package:lib_flutter_app/src/diagro.dart';
 
 
 class UnauthorizedScreen extends ConsumerWidget
@@ -43,8 +44,8 @@ class UnauthorizedScreen extends ConsumerWidget
                     color: Colors.lightBlue,
                     child: const Text("Terug naar startscherm", style: TextStyle(color: Colors.white, fontSize: 18)),
                     onPressed: () {
-                      ref.read(appState.state).state = DiagroState.authenticated;
-                      Navigator.pushNamed(context, '/');
+                      ref.read(appState.state).state = ref.read(appStateBeforeUnauthorized);
+                      //Navigator.pushNamed(context, '/');
                     }
                   )
                 ]

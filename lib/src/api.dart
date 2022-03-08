@@ -18,6 +18,9 @@ class API
 
   void _unauthorizedHandler()
   {
+    //save old state
+    ref.read(appStateBeforeUnauthorized.state).state = ref.read(appState);
+
     ref //set app state to unauthorized
         .read(appState.state)
         .state = DiagroState.unauthorized;
@@ -25,7 +28,20 @@ class API
 
   void _otherErrorHandler(http.Response response)
   {
-    ref.read(errorProvider.state).state = response.body;
+    try {
+      var json = jsonDecode(response.body);
+      if(json is Map && json.containsKey('message')) {
+        ref.read(errorProvider.state).state = json['message'];
+      } else {
+        ref.read(errorProvider.state).state = response.body;
+      }
+    } on FormatException {
+      ref.read(errorProvider.state).state = response.body;
+    }
+
+    //save old state
+    ref.read(appStateBeforeError.state).state = ref.read(appState);
+
     ref //set app state to error
         .read(appState.state)
         .state = DiagroState.error;
