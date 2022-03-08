@@ -10,7 +10,7 @@ import 'package:lib_flutter_token/flutter_token.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
 
-import 'companies.dart';
+import 'package:lib_flutter_app/src/companies.dart';
 
 enum DiagroState
 {

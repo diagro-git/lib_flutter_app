@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'diagro.dart';
+import 'package:lib_flutter_app/src/diagro.dart';
 
 class API
 {
