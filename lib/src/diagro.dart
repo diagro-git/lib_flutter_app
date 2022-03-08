@@ -112,9 +112,13 @@ class Authenticator
   Future<void> switchCompany(diagro_company.Company company) async
   {
     var token = ref.read(authenticationToken);
+    if(token == null) {
+      await ref.read(authenticationToken.notifier).fetch();
+      token = ref.read(authenticationToken);
+    }
 
     if(token == null) {
-      ref.read(appState.state).state = DiagroState.login;
+      await logout();
     } else {
       ref.read(diagro_company.company.notifier).setCompany(company);
       await loginWithToken();
@@ -185,7 +189,9 @@ class Authenticator
         await ref.read(diagro_company.company.notifier).setCompany(null);
         ref.read(appState.state).state = DiagroState.company;
       } else {
-        await logout();
+        await ref.read(applicationAuthenticationToken.notifier).delete();
+        await ref.read(diagro_company.companies.notifier).delete();
+        await ref.read(diagro_company.company.notifier).delete();
         _error("Account heeft geen toegang tot deze applicatie!");
       }
     }

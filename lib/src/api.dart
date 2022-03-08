@@ -49,7 +49,7 @@ class API
 
   dynamic _responseHandler(http.Response response, String? wrap)
   {
-    if(response.statusCode == 200) {
+    if(response.statusCode == 200 || response.statusCode == 201) {
       try {
         var json = jsonDecode(response.body);
         if (json is Map && wrap != null && json.containsKey(wrap)) {
