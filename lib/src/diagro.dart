@@ -14,7 +14,7 @@ import 'companies.dart';
 
 enum DiagroState
 {
-  uninitialized, login, company, refresh, authenticated, offline
+  uninitialized, login, company, refresh, authenticated, offline, unauthorized, error
 }
 
 
@@ -93,6 +93,19 @@ class Authenticator
   }
 
 
+  Future<void> switchCompany(diagro_company.Company company) async
+  {
+    var token = ref.read(authenticationToken);
+
+    if(token == null) {
+      ref.read(appState.state).state = DiagroState.login;
+    } else {
+      ref.read(diagro_company.company.notifier).setCompany(company);
+      await loginWithToken();
+    }
+  }
+
+
   Future<void> refresh() async
   {
     await ref.read(applicationAuthenticationToken.notifier).delete();
@@ -143,7 +156,7 @@ class Authenticator
         await ref.read(authenticationToken.notifier).setToken(body['at']);
       }
 
-      if(body.containsKey('aat')) {
+      if(body.containsKey('aat') && body['aat'] != null) {
         ref.read(applicationAuthenticationToken.notifier).setToken(body['aat']);
         ref.read(user.state).state = AppAuthToken.decode(body['aat']).user;
         ref.read(appState.state).state = DiagroState.authenticated;
@@ -153,6 +166,8 @@ class Authenticator
         );
         await ref.read(diagro_company.company.notifier).setCompany(null);
         ref.read(appState.state).state = DiagroState.company;
+      } else {
+        await logout();
       }
     }
   }
@@ -164,6 +179,7 @@ final user = StateProvider<User?>((ref) => null);
 final appState = StateProvider<DiagroState>((ref) => DiagroState.uninitialized);
 final appStateBeforeOffline = StateProvider<DiagroState>((ref) => DiagroState.uninitialized);
 final authenticator = Provider((ref) => Authenticator(ref));
+final errorProvider = StateProvider<String>((ref) => "");
 
 final appIniter = FutureProvider<void>((ref) async {
   //hive initialisation

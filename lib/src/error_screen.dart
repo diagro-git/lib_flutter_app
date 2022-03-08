@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lib_flutter_app/src/diagro.dart';
 
 
-class OfflineScreen extends ConsumerWidget
+class ErrorScreen extends ConsumerWidget
 {
-  const OfflineScreen({Key? key}) : super(key: key);
+  const ErrorScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var size = MediaQuery.of(context).size;
 
-    return Stack(children: [
+    return Scaffold(
+        body: Stack(children: [
       Container(
         decoration: const BoxDecoration(
             image: DecorationImage(
@@ -33,12 +35,23 @@ class OfflineScreen extends ConsumerWidget
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Text("Offline",
+                  Text("Fout!",
                       style: GoogleFonts.comfortaa(
                           fontWeight: FontWeight.bold, fontSize: 26)),
-                  Text("Deze app heeft internet verbinding nodig om te werken! Is er terug internet verbinding? Dan zou deze melding moeten verdwijnen.", style: GoogleFonts.comfortaa(fontSize: 14))
-                ]))
+                  Text(ref.read(errorProvider), style: GoogleFonts.comfortaa(fontSize: 14)),
+                  MaterialButton(
+                    color: Colors.lightBlue,
+                    child: const Text("Terug naar startscherm", style: TextStyle(color: Colors.white, fontSize: 18)),
+                    onPressed: () {
+                      ref.read(errorProvider.state).state = "";
+                      ref.read(appState.state).state = DiagroState.authenticated;
+                      Navigator.pushNamed(context, '/');
+                    }
+                  )
+                ]
+            )
+        )
       ])
-    ]);
+    ]));
   }
 }

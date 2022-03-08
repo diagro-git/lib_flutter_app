@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:lib_flutter_app/flutter_diagro.dart';
+import 'package:http/http.dart' as http;
 
 part 'companies.g.dart';
 
@@ -98,6 +102,28 @@ class CompaniesNotifier extends StateNotifier<List<Company>>
     await checkBox();
     await box!.delete(boxKey);
     state = [];
+  }
+
+
+  Future<void> getCompaniesFromToken() async
+  {
+    var token = ref.read(authenticationToken);
+    /**
+     * Token can be null because the app hasn't fetched the AT token yet.
+     * This is because the AAT was loaded and is still valid.
+     * So the AT isn't read. Only when it's invalid.
+     */
+    if(token == null) await ref.read(authenticationToken.notifier).fetch();
+    token = ref.read(authenticationToken);
+    var headers = {'x-app-id' : ref.read(appId), 'Accept' : 'application/json', 'Authorization' : 'Bearer $token'};
+    var url = Uri.https(ref.read(diagroServiceAuthUrl), '/companies');
+    var response = await http.get(url, headers: headers);
+    if(response.statusCode == 200) {
+      Map json = jsonDecode(response.body);
+      if(json.containsKey('companies')) {
+        state = Company.fromJson(json['companies']);
+      }
+    }
   }
 
 

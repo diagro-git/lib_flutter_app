@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lib_flutter_app/flutter_diagro.dart';
 import 'package:lib_flutter_app/src/diagro.dart';
+import 'package:lib_flutter_app/src/error_screen.dart';
 import 'package:lib_flutter_app/src/offline_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lib_flutter_app/src/unauthorized_screen.dart';
 
 
 class DiagroApp extends ConsumerWidget
@@ -35,8 +37,12 @@ class DiagroApp extends ConsumerWidget
       return app;
     } else if(state == DiagroState.offline) {
       return const OfflineApp();
+    } else if(state == DiagroState.unauthorized) {
+      return const UnauthorizedApp();
+    } else if(state == DiagroState.error) {
+      return const ErrorApp();
     } else {
-      throw Exception("Unknonw Diagro application state!");
+      throw Exception("Unknown Diagro application state!");
     }
   }
 
@@ -106,6 +112,40 @@ class OfflineApp extends StatelessWidget
         debugShowCheckedModeBanner: false,
         home: Scaffold(
             body: OfflineScreen()
+        )
+    );
+  }
+
+}
+
+
+class UnauthorizedApp extends StatelessWidget
+{
+  const UnauthorizedApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+            body: UnauthorizedScreen()
+        )
+    );
+  }
+
+}
+
+
+class ErrorApp extends StatelessWidget
+{
+  const ErrorApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+            body: ErrorScreen()
         )
     );
   }

@@ -24,8 +24,7 @@ class LoginScreenState extends ConsumerState<LoginScreen>
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
 
-    return Scaffold(
-      body: Stack(
+    return Stack(
         children: [
           Container(
             decoration: const BoxDecoration(
@@ -77,7 +76,6 @@ class LoginScreenState extends ConsumerState<LoginScreen>
             ],
           )
         ],
-      ),
-    );
+      );
   }
 }

@@ -23,8 +23,7 @@ class CompanyScreenState extends ConsumerState<CompanyScreen>
     final company = ref.watch(diagro_company.company);
     var size = MediaQuery.of(context).size;
 
-    return Scaffold(
-        body: Stack(children: [
+    return Stack(children: [
           Container(
             decoration: const BoxDecoration(
                 image: DecorationImage(
@@ -96,6 +95,6 @@ class CompanyScreenState extends ConsumerState<CompanyScreen>
                           color: Colors.lightBlue)
                     ]))
           ])
-        ]));
+        ]);
   }
 }

@@ -94,7 +94,10 @@ class AuthenticationTokenNotifier extends StateNotifier<String?>
   {
     await _createDiagroDirectoryIfNotExists();
     hive.init(await _getDiagroPath());
-    return await hive.openBox(boxName);
+    if(! hive.isBoxOpen(boxName)) {
+      await hive.openBox(boxName);
+    }
+    return hive.box(boxName);
   }
 
 
