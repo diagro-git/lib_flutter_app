@@ -26,6 +26,7 @@ class AuthenticationTokenNotifier extends StateNotifier<String?>
   /// RiverPod reference
   final Ref ref;
   final HiveInterface hive = HiveImpl();
+  Box? box;
 
 
   /// Constructor
@@ -49,7 +50,6 @@ class AuthenticationTokenNotifier extends StateNotifier<String?>
 
     var box = await _getHiveBox();
     await box.put(boxKey, state);
-    await hive.close();
   }
 
 
@@ -67,13 +67,15 @@ class AuthenticationTokenNotifier extends StateNotifier<String?>
 
   /// Get the token from the storage
   /// and set it in the state
-  Future<void> fetch() async
+  Future<bool> fetch() async
   {
+    bool fetched = false;
     var box = await _getHiveBox();
     if(box.isNotEmpty && box.containsKey(boxKey)) {
-       state = box.get('at_token');
+       state = box.get(boxKey);
+       fetched = true;
     }
-    await hive.close();
+    return fetched;
   }
 
 
@@ -83,7 +85,6 @@ class AuthenticationTokenNotifier extends StateNotifier<String?>
   {
     var box = await _getHiveBox();
     await box.delete(boxKey);
-    hive.close();
 
     state = null;
   }
@@ -92,12 +93,13 @@ class AuthenticationTokenNotifier extends StateNotifier<String?>
   /// Get the Hive box for the token.
   Future<Box> _getHiveBox() async
   {
-    await _createDiagroDirectoryIfNotExists();
-    hive.init(await _getDiagroPath());
-    if(! hive.isBoxOpen(boxName)) {
-      await hive.openBox(boxName);
+    if(box == null) {
+      await _createDiagroDirectoryIfNotExists();
+      hive.init(await _getDiagroPath());
     }
-    return hive.box(boxName);
+
+    box = await hive.openBox(boxName);
+    return box!;
   }
 
 

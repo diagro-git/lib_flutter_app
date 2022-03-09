@@ -121,6 +121,7 @@ class Authenticator
       await logout();
     } else {
       ref.read(diagro_company.company.notifier).setCompany(company);
+      ref.read(appState.state).state = DiagroState.refresh;
       await loginWithToken();
     }
   }

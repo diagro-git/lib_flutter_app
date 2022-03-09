@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lib_flutter_app/flutter_diagro.dart';
 
 import 'package:lib_flutter_app/src/diagro.dart';
 
@@ -11,9 +12,29 @@ class API
 
   API(this.ref);
 
-  Future<void> _tokenRevokedHandler() async
+  String? wrap;
+
+  Future<void> _tokenRevokedHandler(http.Response response, String? wrap) async
   {
     await ref.read(authenticator).refresh();
+
+    if(ref.read(appState) == DiagroState.authenticated) { //refresh complete, otherwhise state is login.
+      //do the request again
+      var req = response.request! as http.Request;
+      //set new AAT token in the request
+      req.headers.update('Authorization', (value) => "Bearer ${ref.read(applicationAuthenticationToken)!}");
+
+      //can't send req because it's final, get through a new request
+      if(req.method == 'POST') {
+        return await post(req.url, (req.headers.containsKey('content-type') && req.headers['content-type']!.contains('application/x-www-form-urlencoded')) ? req.bodyFields : null, headers: req.headers, wrap: wrap);
+      } else if(req.method == 'PUT') {
+        return await put(req.url, (req.headers.containsKey('content-type') && req.headers['content-type']!.contains('application/x-www-form-urlencoded')) ? req.bodyFields : null, headers: req.headers, wrap: wrap);
+      } else if(req.method == 'DELETE') {
+        return await delete(req.url, (req.headers.containsKey('content-type') && req.headers['content-type']!.contains('application/x-www-form-urlencoded')) ? req.bodyFields : null, headers: req.headers, wrap: wrap);
+      } else if(req.method == 'GET') {
+        return await get(req.url, headers: req.headers, wrap: wrap);
+      }
+    }
   }
 
   void _unauthorizedHandler()
@@ -47,7 +68,7 @@ class API
         .state = DiagroState.error;
   }
 
-  dynamic _responseHandler(http.Response response, String? wrap)
+  dynamic _responseHandler(http.Response response, String? wrap) async
   {
     if(response.statusCode == 200 || response.statusCode == 201) {
       try {
@@ -61,15 +82,15 @@ class API
       }
     }
 
-    _errorHandler(response);
+    return await _errorHandler(response, wrap);
   }
 
-  Future<void> _errorHandler(http.Response response) async
+  Future<void> _errorHandler(http.Response response, String? wrap) async
   {
    if(response.statusCode == 403 || response.statusCode == 401) { //Unauthorized
       _unauthorizedHandler();
    } else if(response.statusCode == 406) { //Token expired
-     await _tokenRevokedHandler();
+     return await _tokenRevokedHandler(response, wrap);
    } else { //Server error or something else.
      _otherErrorHandler(response);
    }
