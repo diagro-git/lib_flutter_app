@@ -2,9 +2,7 @@
 
 <p align="center">
 <img src="https://img.shields.io/badge/project-lib_flutter_app-yellowgreen" alt="Diagro flutter library">
-<img src="https://img.shields.io/badge/type-library-informational" alt="Diagro service">
-<img src="https://img.shields.io/badge/dart-2.0-blueviolet" alt="PHP">
-<img src="https://img.shields.io/badge/flutter-2.0-red" alt="Laravel framework">
+<img src="https://img.shields.io/badge/type-library-informational" alt="Diagro library">
 </p>
 
 ## Beschrijving
@@ -35,6 +33,13 @@ APP_ID=1
 ```
 
 ## Changelog
+
+
+### V1.1.0
+
+* **Feature**: api class met error handling 
+* **Feature**: unauthorized en error screens
+* **Feature**: standaard drawer
 
 ### V1.0.0
 
