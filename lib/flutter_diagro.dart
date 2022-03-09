@@ -9,3 +9,4 @@ export 'src/company_screen.dart' show CompanyScreen;
 export 'src/diagro_app.dart' show DiagroApp;
 export 'src/configuration.dart' show appId, diagroServiceAuthUrl;
 export 'src/api.dart' show apiProvider;
+export 'src/drawer.dart' show DiagroDrawer;
