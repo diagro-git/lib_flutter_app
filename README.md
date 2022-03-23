@@ -34,6 +34,9 @@ APP_ID=1
 
 ## Changelog
 
+### V1.2.0
+
+* **Feature**: AT token wordt niet meer external opgeslagen maar in de app. Login uit andere apps wordt gedaan door opzoeken van AT token aan de hand van de device UID
 
 ### V1.1.0
 
