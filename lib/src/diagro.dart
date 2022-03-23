@@ -31,19 +31,25 @@ class Authenticator
   Future<void> loginWithToken() async
   {
     var token = ref.read(authenticationToken);
-    var prefferedCompany = ref.read(diagro_company.company);
 
     if(token == null) {
       ref.read(appState.state).state = DiagroState.login;
     } else {
+      var prefferedCompany = ref.read(diagro_company.company);
+      var deviceUID = await UniqueIdentifier.serial;
       var headers = {
         'x-app-id': ref.read(appId),
         'Authorization': 'Bearer $token',
         'Accept': 'application/json'
       };
+
+      if (deviceUID != null) {
+        headers['x-device-uid'] = deviceUID;
+      }
       if (prefferedCompany != null) {
         headers['x-company-preffered'] = prefferedCompany.name;
       }
+
       var url = Uri.https(ref.read(diagroServiceAuthUrl), '/login');
       var response = await http.post(url, headers: headers, body: {});
 
@@ -64,10 +70,16 @@ class Authenticator
   Future<void> loginWithCredentials(String email, String password) async
   {
     var prefferedCompany = ref.read(diagro_company.company);
+    var deviceUID = await UniqueIdentifier.serial;
     var headers = {'x-app-id' : ref.read(appId), 'Accept' : 'application/json'};
+
     if(prefferedCompany != null) {
       headers['x-company-preffered'] = prefferedCompany.name;
     }
+    if (deviceUID != null) {
+      headers['x-device-uid'] = deviceUID;
+    }
+
     var url = Uri.https(ref.read(diagroServiceAuthUrl), '/login');
     var response = await http.post(url, headers: headers, body: {'email' : email, 'password' : password});
 
@@ -128,41 +140,26 @@ class Authenticator
   }
 
 
-  Future<void> loginWithDeviceUID() async
+  Future<String?> tokenFromDeviceUID() async
   {
     var deviceUID = await UniqueIdentifier.serial;
 
     if(deviceUID != null) {
-      var prefferedCompany = ref.read(diagro_company.company);
       var headers = {
         'x-app-id': ref.read(appId),
         'x-device-uid': deviceUID,
         'Accept': 'application/json'
       };
 
-      if (prefferedCompany != null) {
-        headers['x-company-preffered'] = prefferedCompany.name;
-      }
-
-      var url = Uri.https(ref.read(diagroServiceAuthUrl), '/login');
+      var url = Uri.https(ref.read(diagroServiceAuthUrl), '/token-device-uid');
       var response = await http.post(url, headers: headers, body: {});
 
       if (response.statusCode == 200) {
-        await _processLoginResponse(response);
-      } else {
-        await ref.read(diagro_company.companies.notifier).delete();
-        await ref.read(diagro_company.company.notifier).delete();
-        ref
-            .read(appState.state)
-            .state = DiagroState.login;
+        return jsonDecode(response.body)['at'];
       }
-    } else {
-      await ref.read(diagro_company.companies.notifier).delete();
-      await ref.read(diagro_company.company.notifier).delete();
-      ref
-          .read(appState.state)
-          .state = DiagroState.login;
     }
+
+    return null;
   }
 
 
@@ -173,8 +170,14 @@ class Authenticator
     await ref.read(diagro_company.company.notifier).fetch();
 
     var token = ref.read(authenticationToken);
+    token ??= await tokenFromDeviceUID();
+
     if(token == null) {
-      await loginWithDeviceUID();
+      await ref.read(diagro_company.companies.notifier).delete();
+      await ref.read(diagro_company.company.notifier).delete();
+      ref
+          .read(appState.state)
+          .state = DiagroState.login;
     } else {
       await loginWithToken();
     }
