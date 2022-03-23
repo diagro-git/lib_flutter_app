@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lib_flutter_token/flutter_token.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:unique_identifier/unique_identifier.dart';
 
 import 'package:lib_flutter_app/src/companies.dart';
 
@@ -127,6 +128,44 @@ class Authenticator
   }
 
 
+  Future<void> loginWithDeviceUID() async
+  {
+    var deviceUID = await UniqueIdentifier.serial;
+
+    if(deviceUID != null) {
+      var prefferedCompany = ref.read(diagro_company.company);
+      var headers = {
+        'x-app-id': ref.read(appId),
+        'x-device-uid': deviceUID,
+        'Accept': 'application/json'
+      };
+
+      if (prefferedCompany != null) {
+        headers['x-company-preffered'] = prefferedCompany.name;
+      }
+
+      var url = Uri.https(ref.read(diagroServiceAuthUrl), '/login');
+      var response = await http.post(url, headers: headers, body: {});
+
+      if (response.statusCode == 200) {
+        await _processLoginResponse(response);
+      } else {
+        await ref.read(diagro_company.companies.notifier).delete();
+        await ref.read(diagro_company.company.notifier).delete();
+        ref
+            .read(appState.state)
+            .state = DiagroState.login;
+      }
+    } else {
+      await ref.read(diagro_company.companies.notifier).delete();
+      await ref.read(diagro_company.company.notifier).delete();
+      ref
+          .read(appState.state)
+          .state = DiagroState.login;
+    }
+  }
+
+
   Future<void> refresh() async
   {
     await ref.read(applicationAuthenticationToken.notifier).delete();
@@ -135,11 +174,7 @@ class Authenticator
 
     var token = ref.read(authenticationToken);
     if(token == null) {
-      await ref.read(diagro_company.companies.notifier).delete();
-      await ref.read(diagro_company.company.notifier).delete();
-      ref
-          .read(appState.state)
-          .state = DiagroState.login;
+      await loginWithDeviceUID();
     } else {
       await loginWithToken();
     }

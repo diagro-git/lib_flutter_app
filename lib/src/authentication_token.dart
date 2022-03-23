@@ -25,7 +25,6 @@ class AuthenticationTokenNotifier extends StateNotifier<String?>
 
   /// RiverPod reference
   final Ref ref;
-  final HiveInterface hive = HiveImpl();
   Box? box;
 
 
@@ -33,11 +32,25 @@ class AuthenticationTokenNotifier extends StateNotifier<String?>
   AuthenticationTokenNotifier(this.ref) : super(null);
 
 
+  Future<void> checkBox() async
+  {
+    box ??= await Hive.openBox(boxName);
+  }
+
+
+  Future<void> closeHive() async
+  {
+    if(box != null && box!.isOpen) {
+      await box!.close();
+    }
+  }
+
+
   /// Set a new token
   Future<void> setToken(String token) async
   {
     state = token;
-    save();
+    await save();
   }
 
 
@@ -47,9 +60,8 @@ class AuthenticationTokenNotifier extends StateNotifier<String?>
   Future<void> save() async
   {
     if(state == null || state!.isEmpty) return;
-
-    var box = await _getHiveBox();
-    await box.put(boxKey, state);
+    await checkBox();
+    await box!.put(boxKey, state);
   }
 
 
@@ -70,9 +82,9 @@ class AuthenticationTokenNotifier extends StateNotifier<String?>
   Future<bool> fetch() async
   {
     bool fetched = false;
-    var box = await _getHiveBox();
-    if(box.isNotEmpty && box.containsKey(boxKey)) {
-       state = box.get(boxKey);
+    await checkBox();
+    if(box!.isNotEmpty && box!.containsKey(boxKey)) {
+       state = box!.get(boxKey);
        fetched = true;
     }
     return fetched;
@@ -83,69 +95,11 @@ class AuthenticationTokenNotifier extends StateNotifier<String?>
   /// The authentication token is set to null.
   Future<void> delete() async
   {
-    var box = await _getHiveBox();
-    await box.delete(boxKey);
+    await checkBox();
+    await box!.delete(boxKey);
 
     state = null;
   }
-
-
-  /// Get the Hive box for the token.
-  Future<Box> _getHiveBox() async
-  {
-    if(box == null) {
-      await _createDiagroDirectoryIfNotExists();
-      hive.init(await _getDiagroPath());
-    }
-
-    box = await hive.openBox(boxName);
-    return box!;
-  }
-
-
-  /// Create the external directory if it doesn't exits.
-  Future<void> _createDiagroDirectoryIfNotExists() async
-  {
-    var status = await permission_flutter.Permission.storage.status;
-    if(! status.isGranted) {
-      await [permission_flutter.Permission.storage].request();
-    }
-
-    status = await permission_flutter.Permission.storage.status;
-    if(status.isGranted) {
-      var dir = Directory(await _getDiagroPath());
-      if (! dir.existsSync()) {
-        dir.createSync(recursive: true);
-      }
-    }
-  }
-
-
-  /// Get the external path of the device.
-  /// Android, iOS are different locations.
-  Future<String?> _getStoragePath() async
-  {
-    var path = await ExternalPath.getExternalStorageDirectories();
-    if(path.isNotEmpty) {
-      return path[0];
-    }
-
-    return null;
-  }
-
-
-  /// Get the path of the Diagro folder on the external storage.
-  Future<String> _getDiagroPath() async
-  {
-    var path = await _getStoragePath();
-    if(path != null) {
-      if(! path.endsWith('/')) path += '/';
-      return '${path}diagro';
-    }
-
-    return '/diagro';
-  }
-
 }
 
 
