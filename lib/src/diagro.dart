@@ -10,6 +10,7 @@ import 'package:lib_flutter_token/flutter_token.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:unique_identifier/unique_identifier.dart';
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 
 import 'package:lib_flutter_app/src/companies.dart';
 
@@ -142,20 +143,24 @@ class Authenticator
 
   Future<String?> tokenFromDeviceUID() async
   {
-    var deviceUID = await UniqueIdentifier.serial;
+    final status = await AppTrackingTransparency.requestTrackingAuthorization();
+    if(status == TrackingStatus.authorized || status == TrackingStatus.notSupported) {
+      var deviceUID = await UniqueIdentifier.serial;
 
-    if(deviceUID != null) {
-      var headers = {
-        'x-app-id': ref.read(appId),
-        'x-device-uid': deviceUID,
-        'Accept': 'application/json'
-      };
+      if (deviceUID != null) {
+        var headers = {
+          'x-app-id': ref.read(appId),
+          'x-device-uid': deviceUID,
+          'Accept': 'application/json'
+        };
 
-      var url = Uri.https(ref.read(diagroServiceAuthUrl), '/token-device-uid');
-      var response = await http.post(url, headers: headers, body: {});
+        var url = Uri.https(
+            ref.read(diagroServiceAuthUrl), '/token-device-uid');
+        var response = await http.post(url, headers: headers, body: {});
 
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body)['at'];
+        if (response.statusCode == 200) {
+          return jsonDecode(response.body)['at'];
+        }
       }
     }
 

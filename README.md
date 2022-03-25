@@ -34,6 +34,10 @@ APP_ID=1
 
 ## Changelog
 
+### V1.3.0
+
+* **Update**: iOS tracking permission vereist bij opvragen van tracking ID
+
 ### V1.2.0
 
 * **Feature**: AT token wordt niet meer external opgeslagen maar in de app. Login uit andere apps wordt gedaan door opzoeken van AT token aan de hand van de device UID
