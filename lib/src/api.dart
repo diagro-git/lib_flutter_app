@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lib_flutter_app/flutter_diagro.dart';
 
 import 'package:lib_flutter_app/src/diagro.dart';
+
+import 'configuration.dart';
 
 class API
 {
@@ -45,6 +49,19 @@ class API
     ref //set app state to unauthorized
         .read(appState.state)
         .state = DiagroState.unauthorized;
+  }
+
+  void _timeoutHandler()
+  {
+    //error message
+    ref.read(errorProvider.state).state = "Kon het verzoek niet op tijd verwerken! Probeer nogmaals.";
+
+    //save old state
+    ref.read(appStateBeforeUnauthorized.state).state = ref.read(appState);
+
+    ref //set app state to error
+        .read(appState.state)
+        .state = DiagroState.error;
   }
 
   void _otherErrorHandler(http.Response response)
@@ -97,16 +114,44 @@ class API
   }
 
   Future<dynamic> get(Uri url, {Map<String, String>? headers, String? wrap = 'data'}) async
-  => _responseHandler(await http.get(url, headers: headers), wrap);
+  {
+    try {
+      return _responseHandler(await http.get(url, headers: headers).timeout(
+          Duration(seconds: ref.read(timeout))), wrap);
+    } on TimeoutException {
+      _timeoutHandler();
+    }
+  }
 
   Future<dynamic> put(Uri url, Object? body, {Map<String, String>? headers, String? wrap = 'data'}) async
-  => _responseHandler(await http.put(url, headers: headers, body: body), wrap);
+  {
+    try {
+      return _responseHandler(await http.put(url, headers: headers, body: body).timeout(
+          Duration(seconds: ref.read(timeout))), wrap);
+    } on TimeoutException {
+      _timeoutHandler();
+    }
+  }
 
   Future<dynamic> post(Uri url, Object? body, {Map<String, String>? headers, String? wrap = 'data'}) async
-    => _responseHandler(await http.post(url, headers: headers, body: body), wrap);
+  {
+    try {
+      return _responseHandler(await http.post(url, headers: headers, body: body).timeout(
+          Duration(seconds: ref.read(timeout))), wrap);
+    } on TimeoutException {
+      _timeoutHandler();
+    }
+  }
 
   Future<dynamic> delete(Uri url, Object? body, {Map<String, String>? headers, String? wrap = 'data'}) async
-    => _responseHandler(await http.delete(url, headers: headers, body: body), wrap);
+  {
+    try {
+      return _responseHandler(await http.delete(url, headers: headers, body: body).timeout(
+          Duration(seconds: ref.read(timeout))), wrap);
+    } on TimeoutException {
+      _timeoutHandler();
+    }
+  }
 
 }
 
