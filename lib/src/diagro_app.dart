@@ -25,10 +25,10 @@ class DiagroApp extends ConsumerWidget
       return ref.read(appIniter).when(
           data: (_) => const WaitingApp(),
           error: (error, stack) => const WaitingApp(),
-          loading: () => const WaitingApp()
+          loading: () => const WaitingApp(text: "Applicatie initialiseren!")
       );
     } else if(state == DiagroState.refresh) {
-      return const WaitingApp();
+      return const WaitingApp(text: "Even alles heropfrissen!");
     } else if(state == DiagroState.login) {
       return const LoginApp();
     } else if(state == DiagroState.company) {
@@ -51,15 +51,21 @@ class DiagroApp extends ConsumerWidget
 
 class WaitingApp extends StatelessWidget
 {
-  const WaitingApp({Key? key}) : super(key: key);
+  final String? text;
+
+  const WaitingApp({this.text, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
             body: Center(
-                child: CircularProgressIndicator()
+                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  const CircularProgressIndicator(),
+                  if(text != null)
+                    Padding(child: Text(text!), padding: const EdgeInsets.only(top: 15))
+                ])
             )
         )
     );

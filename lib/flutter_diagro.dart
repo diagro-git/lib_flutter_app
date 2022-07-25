@@ -10,3 +10,4 @@ export 'src/diagro_app.dart' show DiagroApp;
 export 'src/configuration.dart' show appId, diagroServiceAuthUrl;
 export 'src/api.dart' show apiProvider;
 export 'src/drawer.dart' show DiagroDrawer;
+export 'src/widgets/loading.dart' show Loading;
