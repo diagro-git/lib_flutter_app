@@ -185,6 +185,7 @@ class Authenticator
           .read(appState.state)
           .state = DiagroState.login;
     } else {
+      await ref.read(authenticationToken.notifier).setToken(token);
       await loginWithToken();
     }
   }
