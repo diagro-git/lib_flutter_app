@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:lib_flutter_app/src/application_authentication_token.dart';
 import 'package:lib_flutter_app/src/authentication_token.dart';
 import 'package:lib_flutter_app/src/companies.dart' as diagro_company;
@@ -9,7 +11,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lib_flutter_token/flutter_token.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:unique_identifier/unique_identifier.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 
 import 'package:lib_flutter_app/src/companies.dart';
@@ -37,7 +38,7 @@ class Authenticator
       ref.read(appState.state).state = DiagroState.login;
     } else {
       var prefferedCompany = ref.read(diagro_company.company);
-      var deviceUID = await UniqueIdentifier.serial;
+      var deviceUID = await ref.read(deviceId.future);
       var headers = {
         'x-app-id': ref.read(appId),
         'Authorization': 'Bearer $token',
@@ -71,7 +72,7 @@ class Authenticator
   Future<void> loginWithCredentials(String email, String password) async
   {
     var prefferedCompany = ref.read(diagro_company.company);
-    var deviceUID = await UniqueIdentifier.serial;
+    var deviceUID = await ref.read(deviceId.future);
     var headers = {'x-app-id' : ref.read(appId), 'Accept' : 'application/json'};
 
     if(prefferedCompany != null) {
@@ -145,7 +146,7 @@ class Authenticator
   {
     final status = await AppTrackingTransparency.requestTrackingAuthorization();
     if(status == TrackingStatus.authorized || status == TrackingStatus.notSupported) {
-      var deviceUID = await UniqueIdentifier.serial;
+      var deviceUID = await ref.read(deviceId.future);
 
       if (deviceUID != null) {
         var headers = {
@@ -251,6 +252,18 @@ final appStateBeforeError = StateProvider<DiagroState>((ref) => DiagroState.unin
 final appStateBeforeUnauthorized = StateProvider<DiagroState>((ref) => DiagroState.uninitialized);
 final authenticator = Provider((ref) => Authenticator(ref));
 final errorProvider = StateProvider<String>((ref) => "");
+final deviceId = FutureProvider<String?>((ref) async {
+  if(Platform.isAndroid) {
+    AndroidDeviceInfo info = await DeviceInfoPlugin().androidInfo;
+    return info.androidId;
+  } else if(Platform.isIOS) {
+    IosDeviceInfo info = await DeviceInfoPlugin().iosInfo;
+    return info.identifierForVendor;
+  } else if(Platform.isLinux) {
+    LinuxDeviceInfo info = await DeviceInfoPlugin().linuxInfo;
+    return info.machineId;
+  }
+});
 
 final appIniter = FutureProvider<void>((ref) async {
   //hive initialisation

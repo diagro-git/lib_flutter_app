@@ -34,6 +34,14 @@ APP_ID=1
 
 ## Changelog
 
+### V1.7.0
+
+* **Update**: device_info_plus package usage for tracking the user device ID.
+
+### V1.6.0
+
+* **Update**: Loading widget to show a loading spinner with optional text.
+
 ### V1.3.0
 
 * **Update**: iOS tracking permission vereist bij opvragen van tracking ID
