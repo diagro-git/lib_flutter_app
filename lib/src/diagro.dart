@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:android_id/android_id.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:lib_flutter_app/src/application_authentication_token.dart';
@@ -255,8 +255,7 @@ final authenticator = Provider((ref) => Authenticator(ref));
 final errorProvider = StateProvider<String>((ref) => "");
 final deviceId = FutureProvider<String?>((ref) async {
   if(Platform.isAndroid) {
-    AndroidDeviceInfo info = await DeviceInfoPlugin().androidInfo;
-    return info.androidId;
+    return await const AndroidId().getId();
   } else if(Platform.isIOS) {
     IosDeviceInfo info = await DeviceInfoPlugin().iosInfo;
     return info.identifierForVendor;
